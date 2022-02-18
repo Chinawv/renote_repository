@@ -61,9 +61,9 @@ def train_model(data):
 #print('The best parameters of ARIMA{}x - AIC:{}'.format(bestparam,minAIC))
 result_pre=bitcoin_train
 result_pre=bitcoin_train.apply(np.expm1)
-for i in range(1001,1800,100):
-    bestpa = train_model(bitcoin_log.iloc[i-100:i-1,:])
-    model = sm.tsa.statespace.SARIMAX(bitcoin_log.iloc[i-100:i-1,:], order=bestpa,  enforce_stationarity=False,
+for i in range(1001,1800,10):
+    bestpa = train_model(bitcoin_log.iloc[i-20:i-1,:])
+    model = sm.tsa.statespace.SARIMAX(bitcoin_log.iloc[i-20:i-1,:], order=bestpa,  enforce_stationarity=False,
                                       enforce_invertibility=False)
     results = model.fit()
     #pred = results.get_prediction(start=pd.to_datetime('2016-9-11'), end=pd.to_datetime('2021-9-10'), dynamic=False)

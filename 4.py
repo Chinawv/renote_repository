@@ -6,8 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 gold = pd.read_csv(r'C:\Users\Lenovo\Desktop\2022_Problem_C_DATA\gold.csv')
-gold.columns = ['1', 'Date', 'data']
-gold = gold.drop(['1'], axis=1)
+gold.columns = ['Date', 'data']
 gold = gold.set_index(['Date'])
 gold_train = gold.iloc[:1000, :]
 gold_test = gold.iloc[1000:, :]

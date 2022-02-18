@@ -17,7 +17,7 @@ bitcoin=bitcoin.set_index(['Date'])
 bitcoin_train=bitcoin.iloc[:1000,:]
 bitcoin_test=bitcoin.iloc[1000:,:]
 bitcoin_log=bitcoin
-bitcoin_log=bitcoin_log['data'].apply(np.log1p)
+bitcoin_log['data']=bitcoin_log['data'].apply(np.log1p)
 print(bitcoin_train)
 print(bitcoin_test)
 alpha_gold=0.01
@@ -60,7 +60,8 @@ def train_model(data):
 #print('The best parameters of ARIMA{}x{} - AIC:{}'.format(bestparam,bestparam_seasonal,minAIC))
 #print('The best parameters of ARIMA{}x - AIC:{}'.format(bestparam,minAIC))
 result_pre=bitcoin_train
-for i in range(1001,10,1100):
+result_pre=bitcoin_train.apply(np.expm1)
+for i in range(1001,1800,100):
     bestpa = train_model(bitcoin_log.iloc[i-100:i-1,:])
     model = sm.tsa.statespace.SARIMAX(bitcoin_log.iloc[i-100:i-1,:], order=bestpa,  enforce_stationarity=False,
                                       enforce_invertibility=False)
@@ -76,8 +77,8 @@ for i in range(1001,10,1100):
     #result_pre=result_pre.append(forc, )
     result_pre=pd.concat([result_pre,forc],axis=0)
     print(result_pre)
-plt.plot(result_pre[1001:,:])
-plt.plot(bitcoin_test)
+plt.plot(result_pre)
+plt.plot(bitcoin_test.apply(np.expm1))
 plt.show()
     #pred_ci = pred.conf_int()
 #print(results.summary().tables[1])

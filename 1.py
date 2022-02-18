@@ -1,3 +1,4 @@
+#arima
 import pandas as pd
 import itertools
 import statsmodels.api as sm

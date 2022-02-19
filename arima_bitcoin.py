@@ -61,25 +61,33 @@ def train_model(data):
 #print('The best parameters of ARIMA{}x - AIC:{}'.format(bestparam,minAIC))
 result_pre=bitcoin_train
 result_pre=bitcoin_train.apply(np.expm1)
-for i in range(1001,1800,10):
+result_save=pd.DataFrame(columns=['0', '1', '2', '3','4'])
+for i in range(1001,1825,1):
     bestpa = train_model(bitcoin_log.iloc[i-20:i-1,:])
     model = sm.tsa.statespace.SARIMAX(bitcoin_log.iloc[i-20:i-1,:], order=bestpa,  enforce_stationarity=False,
                                       enforce_invertibility=False)
     results = model.fit()
     #pred = results.get_prediction(start=pd.to_datetime('2016-9-11'), end=pd.to_datetime('2021-9-10'), dynamic=False)
-    forc=results.forecast(10)
+    forc=results.forecast(5)
     forc=forc.to_frame()
-    print(forc)
+
     forc.columns=['data']
     forc['data']=forc['data'].apply(np.expm1)
+    forc1=pd.DataFrame(forc.values.T,index=forc.columns,columns=forc.index)
+    forc1.columns=['0', '1', '2', '3','4',]
+    print(forc1)
+    forc=forc.drop(forc.tail(4).index) #从尾部去掉9行
+    print(forc)
     print(type(forc))
     print(type(result_pre))
     #result_pre=result_pre.append(forc, )
     result_pre=pd.concat([result_pre,forc],axis=0)
+    result_save=pd.concat([result_save,forc1],axis=0)
     print(result_pre)
 plt.plot(result_pre)
 plt.plot(bitcoin_test.apply(np.expm1))
 plt.show()
+result_save.to_csv(r'C:\Users\Lenovo\Desktop\2022_Problem_C_DATA\arima.csv')
     #pred_ci = pred.conf_int()
 #print(results.summary().tables[1])
 #results.plot_diagnostics(figsize=(12, 12))
